@@ -22,13 +22,7 @@ namespace MotorCtrl
         /* Pcnt unit configs */
         int pcnt_high_limit = 1000;
         int pcnt_low_limit = -1000;
-    };
-
-    struct EncoderMotorSpeed_t {
-
-
-    };
-    
+    }; 
 
     const char* tagEncdoer = "Encoder";
 
@@ -106,9 +100,7 @@ namespace MotorCtrl
             inline esp_err_t stop() { return pcnt_unit_stop(_pcnt_unit_handler); }
             inline esp_err_t clear() { return pcnt_unit_clear_count(_pcnt_unit_handler); }
             int readCount() { int ret = 0; pcnt_unit_get_count(_pcnt_unit_handler, &ret); return ret; }
-            int raedCountClear() { int ret = 0; ret = readCount(); clear(); return ret; }
-
-
+            int raedCountClear() { int ret = 0; pcnt_unit_get_count(_pcnt_unit_handler, &ret); clear(); return ret; }
     };
 
 }
