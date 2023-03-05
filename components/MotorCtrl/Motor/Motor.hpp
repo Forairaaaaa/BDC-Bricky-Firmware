@@ -29,20 +29,14 @@ namespace MotorCtrl
 
     const char* tagMotor = "Motor";
     
-
     class Motor {
         private:
             MotorConfig_t _cfg;
             uint32_t _mcpwm_duty_tick_max;
             bdc_motor_handle_t _motor_handler;
-            bool _motor_forward;
 
         public:
-            Motor()
-            {
-                _motor_handler = NULL;
-                _motor_forward = true;
-            }
+            Motor() { _motor_handler = NULL; }
             ~Motor() { bdc_motor_del(_motor_handler); }
 
             MotorConfig_t config(void) { return _cfg; }
@@ -95,13 +89,14 @@ namespace MotorCtrl
             inline esp_err_t setSpeed(int32_t speed)
             {
                 /* Set direction */
-                if ((speed > 0) && (!_motor_forward)) {
-                    _motor_forward = true;
+                if (speed > 0) {
                     bdc_motor_forward(_motor_handler);
                 }
-                else if ((speed < 0) && _motor_forward) {
-                    _motor_forward = false;
+                else if (speed < 0) {
                     bdc_motor_reverse(_motor_handler);
+                }
+                else {
+                    return bdc_motor_brake(_motor_handler);
                 }
                 return bdc_motor_set_speed(_motor_handler, abs(speed));
             }
