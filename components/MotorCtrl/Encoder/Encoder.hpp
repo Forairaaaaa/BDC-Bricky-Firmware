@@ -69,16 +69,14 @@ namespace MotorCtrl
                 ESP_ERROR_CHECK(pcnt_unit_set_glitch_filter(_pcnt_unit_handler, &pcnt_filter_config));
 
                 /* Pin setups */
-                pcnt_chan_config_t pcnt_chan_a_config = {
-                    .edge_gpio_num = _cfg.encoderA_gpio_num,
-                    .level_gpio_num = _cfg.encoderB_gpio_num,
-                };
+                pcnt_chan_config_t pcnt_chan_a_config;
+                pcnt_chan_a_config.edge_gpio_num = _cfg.encoderA_gpio_num;
+                pcnt_chan_a_config.level_gpio_num = _cfg.encoderB_gpio_num;
                 pcnt_channel_handle_t pcnt_chan_a_handler = NULL;
                 ESP_ERROR_CHECK(pcnt_new_channel(_pcnt_unit_handler, &pcnt_chan_a_config, &pcnt_chan_a_handler));
-                pcnt_chan_config_t pcnt_chan_b_config = {
-                    .edge_gpio_num = _cfg.encoderB_gpio_num,
-                    .level_gpio_num = _cfg.encoderA_gpio_num,
-                };
+                pcnt_chan_config_t pcnt_chan_b_config;
+                pcnt_chan_b_config.edge_gpio_num = _cfg.encoderB_gpio_num;
+                pcnt_chan_b_config.level_gpio_num = _cfg.encoderA_gpio_num;
                 pcnt_channel_handle_t pcnt_chan_b_handler = NULL;
                 ESP_ERROR_CHECK(pcnt_new_channel(_pcnt_unit_handler, &pcnt_chan_b_config, &pcnt_chan_b_handler));
 

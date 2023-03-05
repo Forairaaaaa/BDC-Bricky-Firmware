@@ -59,6 +59,8 @@ MotorCtrl::Encoder E2;
 MotorCtrl::Encoder E3;
 MotorCtrl::Encoder E4;
 
+MotorCtrl::MotorCtrl MC1;
+
 
 
 
@@ -67,15 +69,15 @@ extern "C" void app_main(void)
     printf("asdasdadasdasd :) \n");
 
 
-    M1.init(MOTOR_M1_IN1, MOTOR_M1_IN2, 0);
-    M2.init(MOTOR_M2_IN1, MOTOR_M2_IN2, 0);
-    M3.init(MOTOR_M3_IN1, MOTOR_M3_IN2, 1);
-    M4.init(MOTOR_M4_IN1, MOTOR_M4_IN2, 1);
+    // M1.init(MOTOR_M1_IN1, MOTOR_M1_IN2, 0);
+    // M2.init(MOTOR_M2_IN1, MOTOR_M2_IN2, 0);
+    // M3.init(MOTOR_M3_IN1, MOTOR_M3_IN2, 1);
+    // M4.init(MOTOR_M4_IN1, MOTOR_M4_IN2, 1);
 
-    M1.setSpeed(300);
-    M2.setSpeed(300);
-    M3.setSpeed(300);
-    M4.setSpeed(300);
+    // M1.setSpeed(300);
+    // M2.setSpeed(300);
+    // M3.setSpeed(300);
+    // M4.setSpeed(300);
 
 
 
@@ -111,14 +113,24 @@ extern "C" void app_main(void)
     // }
 
 
-    E1.init(MOTOR_M1_A, MOTOR_M1_B);
-    E2.init(MOTOR_M2_A, MOTOR_M2_B);
-    E3.init(MOTOR_M3_A, MOTOR_M3_B);
-    E4.init(MOTOR_M4_A, MOTOR_M4_B);
+    // E1.init(MOTOR_M1_A, MOTOR_M1_B);
+    // E2.init(MOTOR_M2_A, MOTOR_M2_B);
+    // E3.init(MOTOR_M3_A, MOTOR_M3_B);
+    // E4.init(MOTOR_M4_A, MOTOR_M4_B);
+
+    // while (1)
+    // {
+    //     printf("E:%d, %d, %d, %d\n", E1.raedCountClear(), E2.raedCountClear(), E3.raedCountClear(), E4.raedCountClear());
+    //     delay(10);
+    // }
+
+
+    MC1.init(MOTOR_M1_IN1, MOTOR_M1_IN2, 0, MOTOR_M1_A, MOTOR_M1_B);
+    MC1.setSpeed(300);
 
     while (1)
     {
-        printf("E:%d, %d, %d, %d\n", E1.raedCountClear(), E2.raedCountClear(), E3.raedCountClear(), E4.raedCountClear());
+        printf("%d\n", MC1.raedCountClear());
         delay(10);
     }
 
