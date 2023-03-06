@@ -11,7 +11,7 @@
 #include <stdio.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
-#include <MotorCtrl.h>
+#include <MotorCtrl.hpp>
 
 
 /**
@@ -57,28 +57,34 @@ MotorCtrl::MotorCtrl MC3;
 MotorCtrl::MotorCtrl MC4;
 
 
-
+static double shit = 0;
 
 extern "C" void app_main(void)
 {
     printf("asdasdadasdasd :) \n");
 
 
+    MC1.initPID(MOTOR_M1_IN1, MOTOR_M1_IN2, 0, MOTOR_M1_A, MOTOR_M1_B);
+    MC2.initPID(MOTOR_M2_IN1, MOTOR_M2_IN2, 0, MOTOR_M2_A, MOTOR_M2_B);
+    MC3.initPID(MOTOR_M3_IN1, MOTOR_M3_IN2, 1, MOTOR_M3_A, MOTOR_M3_B);
+    MC4.initPID(MOTOR_M4_IN1, MOTOR_M4_IN2, 1, MOTOR_M4_A, MOTOR_M4_B);
 
-    MC1.init(MOTOR_M1_IN1, MOTOR_M1_IN2, 0, MOTOR_M1_A, MOTOR_M1_B);
-    MC2.init(MOTOR_M2_IN1, MOTOR_M2_IN2, 0, MOTOR_M2_A, MOTOR_M2_B);
-    MC3.init(MOTOR_M3_IN1, MOTOR_M3_IN2, 1, MOTOR_M3_A, MOTOR_M3_B);
-    MC4.init(MOTOR_M4_IN1, MOTOR_M4_IN2, 1, MOTOR_M4_A, MOTOR_M4_B);
-    MC1.setSpeed(MC1.getMaxSpeedTicks());
-    MC2.setSpeed(MC2.getMaxSpeedTicks());
-    MC3.setSpeed(MC3.getMaxSpeedTicks());
-    MC4.setSpeed(MC4.getMaxSpeedTicks());
+
+    
 
     while (1)
     {
         // printf("%d %ld\n", MC1.raedCountClear(), MC1.getMaxSpeedTicks());
-        printf("S:%f,%f,%f,%f\n", MC1.getSpeedRPM(0.01), MC2.getSpeedRPM(0.01), MC3.getSpeedRPM(0.01), MC4.getSpeedRPM(0.01));
-        delay(10);
+        // printf("S:%f,%f,%f,%f\n", MC1.getSpeedRPM(0.01), MC2.getSpeedRPM(0.01), MC3.getSpeedRPM(0.01), MC4.getSpeedRPM(0.01));
+        // delay(10);
+
+        shit += 0.1;
+
+        MC1.setPIDConfig(shit, shit, shit);
+        MC2.setPIDConfig(shit, shit, shit);
+        MC3.setPIDConfig(shit, shit, shit);
+        MC4.setPIDConfig(shit, shit, shit);
+        delay(1000);
     }
 
 }

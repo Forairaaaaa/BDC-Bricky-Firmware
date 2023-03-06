@@ -31,4 +31,3 @@ idf_component_register(SRC_DIRS ${MotorCtrl_SRC_DIRS}
                   REQUIRES ${MotorCtrl_REQUIRES}
                   PRIV_REQUIRES ${MotorCtrl_PRIV_REQUIRES}
 )
-
