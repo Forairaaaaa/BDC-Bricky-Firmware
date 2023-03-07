@@ -57,7 +57,7 @@ MotorCtrl::MotorCtrl MC3;
 MotorCtrl::MotorCtrl MC4;
 
 
-static double shit = 0;
+static double shit = 600;
 
 extern "C" void app_main(void)
 {
@@ -75,16 +75,16 @@ extern "C" void app_main(void)
     while (1)
     {
         // printf("%d %ld\n", MC1.raedCountClear(), MC1.getMaxSpeedTicks());
-        // printf("S:%f,%f,%f,%f\n", MC1.getSpeedRPM(0.01), MC2.getSpeedRPM(0.01), MC3.getSpeedRPM(0.01), MC4.getSpeedRPM(0.01));
-        // delay(10);
+        printf("S:%f,%f,%f,%f\n", MC1.getCurrentSpeed(), MC2.getCurrentSpeed(), MC3.getCurrentSpeed(), MC4.getCurrentSpeed());
+        delay(10);
 
-        shit += 0.1;
+        // shit += 1;
 
-        MC1.setPIDConfig(shit, shit, shit);
-        MC2.setPIDConfig(shit, shit, shit);
-        MC3.setPIDConfig(shit, shit, shit);
-        MC4.setPIDConfig(shit, shit, shit);
-        delay(1000);
+        // MC1.setSpeed(shit);
+        // MC2.setSpeed(shit);
+        // MC3.setSpeed(shit);
+        // MC4.setSpeed(shit);
+        // delay(1000);
     }
 
 }

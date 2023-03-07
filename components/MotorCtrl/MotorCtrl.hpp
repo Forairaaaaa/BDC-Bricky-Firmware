@@ -14,6 +14,7 @@
 #include <freertos/semphr.h>
 #include "Motor/Motor.hpp"
 #include "Encoder/Encoder.hpp"
+#include <pid_ctrl.h>
 
 
 namespace MotorCtrl
@@ -31,9 +32,9 @@ namespace MotorCtrl
     struct PIDConfig_t {
         double current_speed = 0;               // Current speed in RPM
         double expect_speed = 0;                // Expect speed in RPM
-        double P = 0;
-        double I = 0;
-        double D = 0;
+        double P = 0.6;
+        double I = 0.4;
+        double D = 0.2;
     };
 
     const char* tagMotorCtrl = "MotorCtrl";
@@ -49,10 +50,6 @@ namespace MotorCtrl
             TaskHandle_t _task_handler;
             SemaphoreHandle_t _semaphore_mutex;
 
-            /* Convertion */
-            inline double _ticksToRPS(const uint32_t& ticks, const double& dt) { return (double)ticks / ((double)_cfg.pulse_count_per_round * dt); }
-            inline double _ticksToRPM(const uint32_t& ticks, const double& dt) { return (double)ticks / ((double)_cfg.pulse_count_per_round * dt) * 60; }
-
 
         public:
             MotorCtrl()
@@ -65,7 +62,7 @@ namespace MotorCtrl
             MotorCtrlConfig_t config(void) { return _cfg; }
             void config(const MotorCtrlConfig_t& cfg) { _cfg = cfg; }
 
-            void init(const int& mcpwmA_gpio_num, const int& mcpwmB_gpio_num, const int& mcpwm_group_id,
+            inline void init(const int& mcpwmA_gpio_num, const int& mcpwmB_gpio_num, const int& mcpwm_group_id,
                         const int& encoderA_gpio_num, const int& encoderB_gpio_num)
             {
                 /* Init modules */
@@ -93,7 +90,7 @@ namespace MotorCtrl
                 /* Init task */
                 char task_name_buffer[10];
                 snprintf(task_name_buffer, 10, "Mctrl%d", _cfg.id);
-                xTaskCreate(task_motor_ctrl, task_name_buffer, 4096, this, _cfg.task_priority, &_task_handler);
+                xTaskCreate(task_motor_ctrl, task_name_buffer, 6000, this, _cfg.task_priority, &_task_handler);
             }
 
             PIDConfig_t getPIDConfig()
@@ -123,6 +120,12 @@ namespace MotorCtrl
                 _pid_cfg.expect_speed = rpm;
                 xSemaphoreGive(_semaphore_mutex);
             }
+            void setCurrentSpeed(double rpm)
+            {
+                xSemaphoreTake(_semaphore_mutex, portMAX_DELAY);
+                _pid_cfg.current_speed = rpm;
+                xSemaphoreGive(_semaphore_mutex);
+            }
             double getCurrentSpeed()
             {
                 xSemaphoreTake(_semaphore_mutex, portMAX_DELAY);
@@ -130,8 +133,13 @@ namespace MotorCtrl
                 xSemaphoreGive(_semaphore_mutex);
                 return ret;
             }
-            
-            
+
+
+            /* Convertion */
+            inline double ticksToRPS(const int& ticks, const double& dt) { return (double)ticks / ((double)_cfg.pulse_count_per_round * dt); }
+            inline double ticksToRPM(const int& ticks, const double& dt) { return (double)ticks / ((double)_cfg.pulse_count_per_round * dt) * 60; }
+            inline int RPSToTicks(const double& rpm, const double& dt) { return rpm * ((double)_cfg.pulse_count_per_round * dt); }
+            inline int RPMToTicks(const double& rpm, const double& dt) { return (rpm / 60) * ((double)_cfg.pulse_count_per_round * dt); }
     };
 
     /* Task motor control */
@@ -139,27 +147,56 @@ namespace MotorCtrl
     {
         MotorCtrl* motor = (MotorCtrl*)param;
         MotorCtrlConfig_t motor_cfg = motor->config();
+        PIDConfig_t pid_cfg;
+
+        /* Speed value in ticks */
+        int speed_error = 0;
+        int speed_current = 0;
+        int speed_set = 0;
         
-        PIDConfig_t pid;
+        /* Init PID control block */
+        pid_cfg = motor->getPIDConfig();
+        pid_ctrl_parameter_t pid_runtime_param;
+        pid_runtime_param.kp = pid_cfg.P;
+        pid_runtime_param.ki = pid_cfg.I;
+        pid_runtime_param.kd = pid_cfg.D;
+        pid_runtime_param.cal_type = PID_CAL_TYPE_INCREMENTAL;
+        pid_runtime_param.max_output = motor->Motor::getMaxSpeedTicks();
+        pid_runtime_param.min_output = 0;
+        pid_runtime_param.max_integral = 1000;
+        pid_runtime_param.min_integral = -1000;
+
+        pid_ctrl_block_handle_t pid_ctrl = NULL;
+
+        pid_ctrl_config_t pid_config;
+        pid_config.init_param = pid_runtime_param;
+
+        ESP_ERROR_CHECK(pid_new_control_block(&pid_config, &pid_ctrl));
 
         while (1)
         {
-            /* Motor config update */
+            /* Get PID configs */
+            pid_cfg = motor->getPIDConfig();
 
+            /* Update current speed */
+            speed_current = motor->Encoder::raedCountClear();
+            motor->setCurrentSpeed(motor->ticksToRPM(speed_current, 0.01));
+            speed_current = abs(speed_current);
 
-
-            // motor->setSpeed(300);
-            // vTaskDelay(pdMS_TO_TICKS(3000));
-            // motor->setSpeed(-300);
-            // vTaskDelay(pdMS_TO_TICKS(3000));
-
-            pid = motor->getPIDConfig();
+            speed_error = motor->RPMToTicks(pid_cfg.expect_speed, 0.01) - speed_current;
             
-            printf("%f %f %f\n", pid.P, pid.I, pid.D);
+            
+            /* Compute PID */
+            pid_compute(pid_ctrl, (float)speed_error, (float*)&speed_set);
+
+            // printf("%f\n", speed_set);
+
+
+
+            
+            /* Update in 100Hz */
             vTaskDelay(pdMS_TO_TICKS(10));
-            
         }
-
         vTaskDelete(NULL);
     }
 
