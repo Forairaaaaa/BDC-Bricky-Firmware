@@ -64,18 +64,53 @@ extern "C" void app_main(void)
     printf("asdasdadasdasd :) \n");
 
 
-    MC1.initPID(MOTOR_M1_IN1, MOTOR_M1_IN2, 0, MOTOR_M1_A, MOTOR_M1_B);
-    MC2.initPID(MOTOR_M2_IN1, MOTOR_M2_IN2, 0, MOTOR_M2_A, MOTOR_M2_B);
-    MC3.initPID(MOTOR_M3_IN1, MOTOR_M3_IN2, 1, MOTOR_M3_A, MOTOR_M3_B);
-    MC4.initPID(MOTOR_M4_IN1, MOTOR_M4_IN2, 1, MOTOR_M4_A, MOTOR_M4_B);
+    MC1.init(MOTOR_M1_IN1, MOTOR_M1_IN2, 0, MOTOR_M1_A, MOTOR_M1_B, 1);
+    MC2.init(MOTOR_M2_IN1, MOTOR_M2_IN2, 0, MOTOR_M2_A, MOTOR_M2_B, 2);
+    MC3.init(MOTOR_M3_IN1, MOTOR_M3_IN2, 1, MOTOR_M3_A, MOTOR_M3_B, 3);
+    MC4.init(MOTOR_M4_IN1, MOTOR_M4_IN2, 1, MOTOR_M4_A, MOTOR_M4_B, 4);
+    MC1.setSpeed(1000);   
+    MC2.setSpeed(1000);
+    MC3.setSpeed(1000);
+    MC4.setSpeed(1000);
+    // printf("%ld\n", MC1.getMaxSpeedTicks());
+    // delay(1000);
 
 
-    
+    // while (1)
+    // {
+    //     MC1.setSpeed(400);
+    //     MC2.setSpeed(400);
+    //     MC3.setSpeed(400);
+    //     MC4.setSpeed(400);
+    //     delay(2000);
+    //     MC1.setSpeed(300);
+    //     MC2.setSpeed(300);
+    //     MC3.setSpeed(300);
+    //     MC4.setSpeed(300);
+    //     delay(2000);
+    //     MC1.brake();
+    //     MC2.brake();
+    //     MC3.brake();
+    //     MC4.brake();
+    //     delay(1000);
+    //     MC1.setSpeed(-300);
+    //     MC2.setSpeed(-300);
+    //     MC3.setSpeed(-300);
+    //     MC4.setSpeed(-300);
+    //     delay(2000);
+    //     MC1.setSpeed(-400);
+    //     MC2.setSpeed(-400);
+    //     MC3.setSpeed(-400);
+    //     MC4.setSpeed(-400);
+    //     delay(2000);
+
+    // }
 
     while (1)
     {
         // printf("%d %ld\n", MC1.raedCountClear(), MC1.getMaxSpeedTicks());
-        printf("S:%f,%f,%f,%f\n", MC1.getCurrentSpeed(), MC2.getCurrentSpeed(), MC3.getCurrentSpeed(), MC4.getCurrentSpeed());
+        printf("S:%f,%f,%f,%f\n", MC1.getMotorSpeed(), MC2.getMotorSpeed(), MC3.getMotorSpeed(), MC4.getMotorSpeed());
+        // printf("S:%d,%d,%d,%d\n", MC1.readCountClear(), MC2.readCountClear(), MC3.readCountClear(), MC4.readCountClear());
         delay(10);
 
         // shit += 1;

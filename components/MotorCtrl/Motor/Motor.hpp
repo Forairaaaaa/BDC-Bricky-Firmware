@@ -98,7 +98,14 @@ namespace MotorCtrl
                 else {
                     return bdc_motor_brake(_motor_handler);
                 }
-                return bdc_motor_set_speed(_motor_handler, abs(speed));
+
+                speed = abs(speed);
+
+                /* If bigger */
+                if (speed > _mcpwm_duty_tick_max)
+                    speed = _mcpwm_duty_tick_max;
+                    
+                return bdc_motor_set_speed(_motor_handler, speed);
             }
             inline uint32_t getMaxSpeedTicks() { return _mcpwm_duty_tick_max; }
             inline esp_err_t coast() { return bdc_motor_coast(_motor_handler); }
