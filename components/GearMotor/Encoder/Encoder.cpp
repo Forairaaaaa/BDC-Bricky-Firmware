@@ -12,7 +12,6 @@
 
 static const char* tagEncdoer = "Encoder";
 
-
 namespace GearMotor
 {
     Encoder::Encoder()
