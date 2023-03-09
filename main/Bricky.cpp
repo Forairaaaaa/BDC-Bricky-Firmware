@@ -14,6 +14,7 @@
 // #include <MotorCtrl.hpp>
 #include <Encoder/Encoder.h>
 #include <Motor/Motor.h>
+#include <GearMotor.h>
 
 /**
  * @brief Pin map
@@ -50,7 +51,7 @@
 
 GearMotor::Encoder ec;
 GearMotor::Motor motor;
-
+GearMotor::GearMotor gm;
 
 
 // MotorCtrl::MotorCtrl MC1;
@@ -77,6 +78,11 @@ extern "C" void app_main(void)
 
     motor.setSpeed(-400);
     motor.getMaxSpeedTicks();
+
+    gm.init(1, 2, 3, 4, 5, 6);
+    gm.init(1, 2, 3, 4, 5);
+    gm.getMotorSpeed();
+    
 
 
     // MC1.init(MOTOR_M1_IN1, MOTOR_M1_IN2, 0, MOTOR_M1_A, MOTOR_M1_B, 1);
