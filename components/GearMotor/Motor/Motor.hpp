@@ -14,7 +14,7 @@
 #include <esp_log.h>
 
 
-namespace MotorCtrl
+namespace GearMotor
 {
     struct MotorConfig_t {
         /* Pin configs */

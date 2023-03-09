@@ -11,8 +11,8 @@
 #include <stdio.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
-#include <MotorCtrl.hpp>
-
+// #include <MotorCtrl.hpp>
+#include <Encoder/Encoder.h>
 
 /**
  * @brief Pin map
@@ -47,14 +47,15 @@
 #define delay(ms) vTaskDelay(pdMS_TO_TICKS(ms))
 
 
+GearMotor::Encoder ec;
 
 
 
 
-MotorCtrl::MotorCtrl MC1;
-MotorCtrl::MotorCtrl MC2;
-MotorCtrl::MotorCtrl MC3;
-MotorCtrl::MotorCtrl MC4;
+// MotorCtrl::MotorCtrl MC1;
+// MotorCtrl::MotorCtrl MC2;
+// MotorCtrl::MotorCtrl MC3;
+// MotorCtrl::MotorCtrl MC4;
 
 
 static double shit = 600;
@@ -64,14 +65,20 @@ extern "C" void app_main(void)
     printf("asdasdadasdasd :) \n");
 
 
-    MC1.init(MOTOR_M1_IN1, MOTOR_M1_IN2, 0, MOTOR_M1_A, MOTOR_M1_B, 1);
-    MC2.init(MOTOR_M2_IN1, MOTOR_M2_IN2, 0, MOTOR_M2_A, MOTOR_M2_B, 2);
-    MC3.init(MOTOR_M3_IN1, MOTOR_M3_IN2, 1, MOTOR_M3_A, MOTOR_M3_B, 3);
-    MC4.init(MOTOR_M4_IN1, MOTOR_M4_IN2, 1, MOTOR_M4_A, MOTOR_M4_B, 4);
-    MC1.setSpeed(1000);   
-    MC2.setSpeed(1000);
-    MC3.setSpeed(1000);
-    MC4.setSpeed(1000);
+    ec.init(1, 2);
+    ec.init();
+
+    int shit = ec.readCountClear();
+
+
+    // MC1.init(MOTOR_M1_IN1, MOTOR_M1_IN2, 0, MOTOR_M1_A, MOTOR_M1_B, 1);
+    // MC2.init(MOTOR_M2_IN1, MOTOR_M2_IN2, 0, MOTOR_M2_A, MOTOR_M2_B, 2);
+    // MC3.init(MOTOR_M3_IN1, MOTOR_M3_IN2, 1, MOTOR_M3_A, MOTOR_M3_B, 3);
+    // MC4.init(MOTOR_M4_IN1, MOTOR_M4_IN2, 1, MOTOR_M4_A, MOTOR_M4_B, 4);
+    // MC1.setSpeed(1000);   
+    // MC2.setSpeed(1000);
+    // MC3.setSpeed(1000);
+    // MC4.setSpeed(1000);
     // printf("%ld\n", MC1.getMaxSpeedTicks());
     // delay(1000);
 
@@ -109,7 +116,7 @@ extern "C" void app_main(void)
     while (1)
     {
         // printf("%d %ld\n", MC1.raedCountClear(), MC1.getMaxSpeedTicks());
-        printf("S:%f,%f,%f,%f\n", MC1.getMotorSpeed(), MC2.getMotorSpeed(), MC3.getMotorSpeed(), MC4.getMotorSpeed());
+        // printf("S:%f,%f,%f,%f\n", MC1.getMotorSpeed(), MC2.getMotorSpeed(), MC3.getMotorSpeed(), MC4.getMotorSpeed());
         // printf("S:%d,%d,%d,%d\n", MC1.readCountClear(), MC2.readCountClear(), MC3.readCountClear(), MC4.readCountClear());
         delay(10);
 
