@@ -10,7 +10,7 @@
  */
 #include "Encoder.h"
 
-static const char* tagEncdoer = "Encoder";
+#define TagEncdoer "Encoder"
 
 namespace GearMotor
 {
@@ -33,7 +33,7 @@ namespace GearMotor
     void Encoder::init(void)
     {
         if (_cfg.encoderA_gpio_num <= GPIO_NUM_NC || _cfg.encoderB_gpio_num <= GPIO_NUM_NC) {
-            ESP_LOGE(tagEncdoer, "Invalid pin config");
+            ESP_LOGE(TagEncdoer, "Invalid pin config");
             return;
         }
 

@@ -13,6 +13,7 @@
 #include <freertos/task.h>
 // #include <MotorCtrl.hpp>
 #include <Encoder/Encoder.h>
+#include <Motor/Motor.h>
 
 /**
  * @brief Pin map
@@ -48,7 +49,7 @@
 
 
 GearMotor::Encoder ec;
-
+GearMotor::Motor motor;
 
 
 
@@ -69,6 +70,13 @@ extern "C" void app_main(void)
     ec.init();
 
     int shit = ec.readCountClear();
+
+    motor.brake();
+    motor.init(1, 2, 3);
+    motor.init();
+
+    motor.setSpeed(-400);
+    motor.getMaxSpeedTicks();
 
 
     // MC1.init(MOTOR_M1_IN1, MOTOR_M1_IN2, 0, MOTOR_M1_A, MOTOR_M1_B, 1);
